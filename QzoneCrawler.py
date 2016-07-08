@@ -60,7 +60,6 @@ class Crawler:
         '''将值转换为字节码,貌似字节参数可以直接传给自己写的DLL函数'''
         try :
             skey = match.groups()[0].encode('utf-8')
-            ''' 调用DLL来计算g_tk的int值 '''
             return str(self.getACSRFToken(skey))
         except Exception as err:
             self.__write(str(err))
