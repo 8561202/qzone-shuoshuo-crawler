@@ -1,12 +1,13 @@
-﻿#-*- coding: UTF-8 -*-
+#-*- coding: UTF-8 -*-
 
-from socket import*
+
 import time
 import os
 import re
-from ctypes import cdll
 import gzip
 import json
+from socket import*
+
 
 # httpx module from -> https://github.com/thisforeda/socket-http
 import httpx
@@ -60,6 +61,7 @@ class Crawler:
         '''将值转换为字节码,貌似字节参数可以直接传给自己写的DLL函数'''
         try :
             skey = match.groups()[0].encode('utf-8')
+            ''' 调用DLL来计算g_tk的int值 '''
             return str(self.getACSRFToken(skey))
         except Exception as err:
             self.__write(str(err))
@@ -213,7 +215,7 @@ class Crawler:
                         '''------------数据大小检查-----------'''
                         if len(ret.data) < MINIMUM:
                             self.__write(self.__safedec(ret.data))
-                            print("返回数据小于最低值,请先检查日志")
+                            print("[WARN] 返回数据小于最低值,请先检查日志")
                             while True:
                                 cmd = input("指令:")
                                 if cmd == "continue":
@@ -231,7 +233,7 @@ class Crawler:
                                 if shuoshuo_cnt == 0:
                                     return False
                                 isFirstRun   = False
-                                print("user %d has %d shuoshuo,now crawling"%(qnum,shuoshuo_cnt))
+                                print("[INFO] user %d has %d shuoshuo,now crawling."%(qnum,shuoshuo_cnt))
                             else: return False
                         with open(outname,'ab') as streamout:
                             streamout.write(ret.data + CRLF*2)
@@ -268,7 +270,8 @@ class Crawler:
 def main_thread():
     crawler = Crawler()
     crawler.basedir = os.getcwd() + '\\crawler\\'
-    crawler.cookie = 'YOUR COOKIE'
+    crawler.cookie = 'YOUR COOKIE HERE'
+    
     
     with open('friends.dat','rb') as hfriend:
         for line in hfriend:
@@ -282,9 +285,9 @@ def main_thread():
             crawler.dicts = {}
             ret = crawler.get_shuoshuo_emotion_cgi_msglist(QQ)
             if ret == False:
-                print("failed craw %s, access denied or no shuoshuo to craw"%QQ)
+                print("[WARN] failed craw %s, access denied or no shuoshuo."%QQ)
                 continue
-            print("time used= %d"%(time.clock() - startT))
+            print("[TIME] time used= %d"%(time.clock() - startT))
             with open(crawler.basedir + str(QQ) + '.dat','wb') as hf:
                 for (key,value) in crawler.dicts.items():
                     key  = str(key).encode('utf-8')
