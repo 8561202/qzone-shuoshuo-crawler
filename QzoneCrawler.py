@@ -104,7 +104,7 @@ class Crawler:
             '''获取说说数量的地址和说说JSON的地址不一样'''
             ret = httpx.urlopen(
                 self.main_page_cgi_url%(qnum,g_tk),
-                custom_header={'Cookie':cookie}
+                header={'Cookie':cookie}
                 )
             
             if not hasattr(ret,'data'):
@@ -137,7 +137,7 @@ class Crawler:
                     startpos += distance
                     ret = httpx.urlopen(
                         self.feeds_html_act_url%(qnum,startpos,distance,g_tk),
-                        custom_header = {'Cookie':cookie}
+                        header = {'Cookie':cookie}
                         )
                     if hasattr(ret,'data'):
                         with open(outname,'ab') as streamout:
@@ -209,7 +209,7 @@ class Crawler:
                     #print("startpos=%d  distance=%d"%(startpos,distance))
                     ret = httpx.urlopen(
                         self.emotion_cgi_msglist_url%(qnum,startpos,distance,g_tk),
-                        custom_header = {'Cookie':cookie}
+                        header = {'Cookie':cookie}
                         )
                     if hasattr(ret,'data'):
                         '''------------数据大小检查-----------'''
